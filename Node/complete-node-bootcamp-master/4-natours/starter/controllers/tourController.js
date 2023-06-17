@@ -79,6 +79,7 @@ exports.createTour = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: 'fail',
+      detailedMessage: err,
       message: 'Error: Validation Failed 🚨',
     });
   }
@@ -94,7 +95,7 @@ exports.updateTour = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: {
-        tour: '<Updated Tour Here>',
+        tour,
       },
     });
   } catch (err) {
@@ -105,10 +106,19 @@ exports.updateTour = async (req, res) => {
   }
 };
 
-exports.deleteTour = (req, res) => {
-  // 204 means no content
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
+exports.deleteTour = async (req, res) => {
+  try {
+    await Tour.findByIdAndDelete(req.params.id);
+
+    // 204 means no content
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
