@@ -1,4 +1,5 @@
 // const fs = require('fs');
+const { query } = require('express');
 const Tour = require('./../models/tourModel');
 
 // const tours = JSON.parse(
@@ -31,8 +32,30 @@ const Tour = require('./../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    // BUILD QUERY
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
 
+    const query = Tour.find(queryObj);
+
+    // EXECUTE QUERY
+    const tours = await query;
+
+    // STANDARD FILTER OBJECT, SAME AS REQ.QUERY
+    // const query = await Tour.find({
+    //   duration: 5,
+    //   difficulty: 'easy',
+    // });
+
+    // FILTER QUERY USING MONGOOSE
+    // const query = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
+
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       results: tours.length,
