@@ -23,6 +23,7 @@ exports.getAllTours = async (req, res) => {
     // SEND RESPONSE
     res.status(200).json({
       status: 'success',
+      message: 'Testing a change',
       results: tours.length,
       data: {
         tours,
